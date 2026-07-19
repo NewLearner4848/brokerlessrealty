@@ -1,0 +1,23 @@
+# Environment / secrets
+.env
+backend/.env
+frontend/.env.local
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+frontend/dist/
+frontend/dist.zip
+frontend/build.zip
+
+# Local SQLite database (managed via Docker volume in production)
+backend/brokerless.sqlite
+
+# Uploaded files
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
+# Logs / OS
+*.log
+.DS_Store

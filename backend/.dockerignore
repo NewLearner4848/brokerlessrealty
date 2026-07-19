@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+*.md
+brokerless.sqlite
+public/uploads/*
+!public/uploads/.gitkeep
+Dockerfile
+.dockerignore

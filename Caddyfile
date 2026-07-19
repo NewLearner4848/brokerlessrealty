@@ -1,0 +1,33 @@
+# ============================================================================
+#  Edge reverse proxy for Brokerless Realty
+#  Caddy automatically provisions & renews Let's Encrypt TLS certificates for
+#  every domain listed below (ports 80/443 must be reachable from the internet).
+# ============================================================================
+
+{
+	# Email used by Let's Encrypt for expiry notices. Set ACME_EMAIL in .env.
+	email {$ACME_EMAIL}
+}
+
+# ---- Frontend (static React SPA) ----
+{$FRONTEND_DOMAIN}, www.{$FRONTEND_DOMAIN} {
+	encode gzip zstd
+
+	# Redirect the www variant to the bare domain.
+	@www host www.{$FRONTEND_DOMAIN}
+	redir @www https://{$FRONTEND_DOMAIN}{uri} permanent
+
+	reverse_proxy frontend:80
+}
+
+# ---- Backend (Express API + uploaded images) ----
+{$BACKEND_DOMAIN} {
+	encode gzip zstd
+
+	# Allow larger request bodies for image uploads (10MB limit in the app).
+	request_body {
+		max_size 12MB
+	}
+
+	reverse_proxy backend:3001
+}

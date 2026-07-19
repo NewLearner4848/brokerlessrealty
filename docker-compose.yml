@@ -1,0 +1,74 @@
+# ============================================================================
+#  Brokerless Realty — production stack
+#  Services: backend (Node/Express + SQLite), frontend (Vite build served by
+#  Caddy), caddy (edge reverse proxy with automatic HTTPS).
+# ============================================================================
+
+services:
+  backend:
+    build:
+      context: ./backend
+    image: brokerless-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      DB_PATH: /app/data/brokerless.sqlite
+    volumes:
+      - backend-data:/app/data # persistent SQLite database
+      - backend-uploads:/app/public/uploads # persistent uploaded images
+    expose:
+      - "3001"
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3001/api/properties',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://backend.brokerlessrealty.com}
+    image: brokerless-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-brokerlessrealty.com}
+      BACKEND_DOMAIN: ${BACKEND_DOMAIN:-backend.brokerlessrealty.com}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@brokerlessrealty.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data # certificates & ACME state (keep this!)
+      - caddy-config:/config
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  backend-data:
+  backend-uploads:
+  caddy-data:
+  caddy-config:

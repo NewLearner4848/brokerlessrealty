@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Admin pages should not be crawled/indexed
+Disallow: /#/admin/
+Disallow: /admin/
+
+Sitemap: https://brokerlessrealty.com/sitemap.xml
