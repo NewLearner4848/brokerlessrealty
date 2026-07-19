@@ -55,43 +55,73 @@ volumes (`backend-data`, `backend-uploads`), and TLS certificates in
 
 ---
 
-## 3. Quick Start (TL;DR)
+## 3. Fresh VPS? Run the bootstrap first
+
+A brand-new server needs some one-time prep (non-root user, firewall, swap,
+Docker). The included `server-bootstrap.sh` does all of it. **Run it once, as
+root, on the VPS:**
 
 ```bash
-# On the VPS, as a sudo user:
-git clone <your-repo-url> brokerless && cd brokerless
+# SSH into the fresh server as root, then:
+curl -fsSL https://raw.githubusercontent.com/NewLearner4848/brokerlessrealty/main/server-bootstrap.sh -o server-bootstrap.sh
+bash server-bootstrap.sh deploy      # "deploy" = the non-root user to create
+```
 
-# 1. Install Docker (first time only)
-sudo ./deploy.sh --install-docker
-# log out/in once so your user picks up the docker group, or use sudo
+It installs updates + Docker, creates a sudo user named `deploy` (copying your
+SSH key from root), enables the UFW firewall (SSH/80/443 only), and adds a swap
+file so Docker builds don't run out of memory on small VPSes.
 
-# 2. First run creates .env files, then stops so you can edit them
+When it finishes, **open a new terminal and log in as the new user** (so the
+`docker` group applies), then continue with the Quick Start below:
+
+```bash
+ssh deploy@<server-ip>
+```
+
+> The bootstrap is idempotent — safe to re-run. It does **not** disable root/
+> password SSH login automatically; harden that manually once you've confirmed
+> key login works as `deploy` (commands printed at the end of the script).
+
+---
+
+## 4. Quick Start (TL;DR)
+
+```bash
+# As the deploy user on the VPS:
+git clone https://github.com/NewLearner4848/brokerlessrealty.git
+cd brokerlessrealty
+
+# 1. First run creates .env files, then stops so you can edit them
+#    (Docker is already installed by server-bootstrap.sh)
 ./deploy.sh
 nano .env            # set domains + ACME_EMAIL + VITE_API_BASE_URL
 nano backend/.env    # set JWT_SECRET + SMTP credentials
 
-# 3. Deploy for real
+# 2. Deploy for real
 ./deploy.sh
 
-# 4. Watch certificate issuance & startup
+# 3. Watch certificate issuance & startup
 ./deploy.sh --logs
 ```
 
 Open **https://brokerlessrealty.com** — you're live. 🎉
 
+> If you skipped the bootstrap (Docker not installed yet), run
+> `sudo ./deploy.sh --install-docker` first.
+
 ---
 
-## 4. Step-by-Step
+## 5. Step-by-Step
 
-### 4.1 Get the code onto the VPS
+### 5.1 Get the code onto the VPS
 
 ```bash
-git clone <your-repo-url> brokerless
-cd brokerless
+git clone https://github.com/NewLearner4848/brokerlessrealty.git
+cd brokerlessrealty
 ```
 (or `scp` / `rsync` the project directory up.)
 
-### 4.2 Install Docker
+### 5.2 Install Docker
 
 If Docker isn't installed yet:
 
@@ -106,7 +136,7 @@ To run Docker without `sudo`, add your user to the `docker` group and re-login:
 sudo usermod -aG docker $USER && newgrp docker
 ```
 
-### 4.3 Configure environment
+### 5.3 Configure environment
 
 The first `./deploy.sh` run copies the example env files and pauses.
 
@@ -134,7 +164,7 @@ Generate a strong JWT secret:
 openssl rand -hex 32
 ```
 
-### 4.4 Deploy
+### 5.4 Deploy
 
 ```bash
 ./deploy.sh
@@ -145,7 +175,7 @@ TLS certificates automatically on the first HTTPS request (allow ~30s).
 
 ---
 
-## 5. `deploy.sh` Reference
+## 6. `deploy.sh` Reference
 
 | Command                        | What it does                                   |
 |--------------------------------|------------------------------------------------|
@@ -159,7 +189,7 @@ TLS certificates automatically on the first HTTPS request (allow ~30s).
 
 ---
 
-## 6. Day-2 Operations
+## 7. Day-2 Operations
 
 **Redeploy after a code change** (e.g. `git pull`):
 ```bash
@@ -207,7 +237,7 @@ Restore by extracting the tarball back into the same volume.
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause / Fix |
 |---------|-------------|
@@ -220,9 +250,10 @@ Restore by extracting the tarball back into the same volume.
 
 ---
 
-## 8. Files Added for Deployment
+## 9. Files Added for Deployment
 
 ```
+├── server-bootstrap.sh       # Fresh-VPS prep: user, firewall, swap, Docker
 ├── Caddyfile                 # Edge reverse proxy + auto HTTPS (both domains)
 ├── docker-compose.yml        # Orchestrates backend + frontend + caddy
 ├── deploy.sh                 # One-shot deploy / manage script
