@@ -9,7 +9,7 @@ const {
     deleteProperty,
 } = require('../controllers/property.controller');
 const { protect } = require('../middleware/auth.middleware');
-const handleUpload = require('../middleware/upload.middleware');
+const { handleUpload } = require('../middleware/upload.middleware');
 
 // Public routes
 router.get('/', getAllProperties);

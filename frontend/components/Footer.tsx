@@ -55,8 +55,14 @@ const Footer: React.FC = () => {
         }
     };
 
-    const FooterLink: React.FC<{children: React.ReactNode}> = ({children}) => (
-        <li><a href="#" className="text-gray-600 hover:text-[var(--color-dark)] transition-colors text-sm">{children}</a></li>
+    const FooterLink: React.FC<{children: React.ReactNode, to?: string}> = ({children, to}) => (
+        <li>
+            {to ? (
+                <Link to={to} className="text-gray-600 hover:text-[var(--color-dark)] transition-colors text-sm">{children}</Link>
+            ) : (
+                <a href="#" className="text-gray-600 hover:text-[var(--color-dark)] transition-colors text-sm">{children}</a>
+            )}
+        </li>
     );
 
   return (
@@ -69,7 +75,7 @@ const Footer: React.FC = () => {
             <Logo />
           </Link>
           <p className="text-xl md:text-2xl font-semibold text-gray-600 max-w-md">
-            More Than a Transaction, It's Your Journey, Your Story -- BrokerLess!
+            More Than a Transaction, It's Your Journey, Your Story -- BrokerLess!
           </p>
         </div>
 
@@ -91,16 +97,16 @@ const Footer: React.FC = () => {
             <h3 className="font-semibold text-[var(--color-dark)] tracking-wider">Quick Links</h3>
             <div className="flex gap-12">
               <ul className="mt-4 space-y-3">
-                <FooterLink>Properties in Mumbai</FooterLink>
-                <FooterLink>Properties in Delhi NCR</FooterLink>
-                <FooterLink>Properties in Bangalore</FooterLink>
-                <FooterLink>Properties in Pune</FooterLink>
+                <FooterLink to="/properties">Properties in Mumbai</FooterLink>
+                <FooterLink to="/properties">Properties in Delhi NCR</FooterLink>
+                <FooterLink to="/properties">Properties in Bangalore</FooterLink>
+                <FooterLink to="/properties">Properties in Pune</FooterLink>
               </ul>
               <ul className="mt-4 space-y-3">
-                  <FooterLink>Apartments</FooterLink>
-                  <FooterLink>Villas</FooterLink>
-                  <FooterLink>Independent Houses</FooterLink>
-                  <FooterLink>Plots</FooterLink>
+                  <FooterLink to="/blog">Blog & Articles</FooterLink>
+                  <FooterLink to="/about">About Us</FooterLink>
+                  <FooterLink to="/contact">Contact Us</FooterLink>
+                  <FooterLink to="/properties">Apartments & Villas</FooterLink>
               </ul>
             </div>
           </div>

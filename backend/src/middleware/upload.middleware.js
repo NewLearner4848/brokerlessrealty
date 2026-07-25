@@ -17,44 +17,55 @@ const storage = multer.diskStorage({
     }
 });
 
-// Init upload
-const upload = multer({
+// Init upload array
+const uploadArray = multer({
     storage: storage,
     limits: { fileSize: 10000000 }, // 10MB limit
     fileFilter: function(req, file, cb){
         checkFileType(file, cb);
     }
-}).array('images', 10); // 'images' is the field name in FormData, limit to 10 files
+}).array('images', 10);
+
+// Init upload single
+const uploadSingle = multer({
+    storage: storage,
+    limits: { fileSize: 10000000 },
+    fileFilter: function(req, file, cb){
+        checkFileType(file, cb);
+    }
+}).single('file');
 
 // Check file type
 function checkFileType(file, cb){
-    // Allowed extensions
-    const filetypes = /jpeg|jpg|png|gif|webp/;
-    // Check ext
+    const filetypes = /jpeg|jpg|png|gif|webp|svg/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
     const mimetype = filetypes.test(file.mimetype);
 
-    if(mimetype && extname){
+    if(mimetype || extname){
         return cb(null, true);
     } else {
         cb(new Error('Error: Images Only!'));
     }
 }
 
-// Middleware to handle multer errors gracefully
+// Middleware to handle multer array errors
 const handleUpload = (req, res, next) => {
-    upload(req, res, (err) => {
-        if (err instanceof multer.MulterError) {
-            // A Multer error occurred when uploading.
-            return res.status(400).json({ message: err.message });
-        } else if (err) {
-            // An unknown error occurred when uploading.
+    uploadArray(req, res, (err) => {
+        if (err) {
             return res.status(400).json({ message: err.message });
         }
-        // Everything went fine.
         next();
     });
 };
 
-module.exports = handleUpload;
+// Middleware to handle single file upload
+const handleSingleUpload = (req, res, next) => {
+    uploadSingle(req, res, (err) => {
+        if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+        next();
+    });
+};
+
+module.exports = { handleUpload, handleSingleUpload };

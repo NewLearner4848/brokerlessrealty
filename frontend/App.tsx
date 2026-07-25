@@ -8,12 +8,15 @@ import ListingsPage from './pages/ListingsPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import BlogPage from './pages/BlogPage';
+import BlogPostPage from './pages/BlogPostPage';
 import FloatingChatWidget from './components/FloatingChatWidget';
 import LoginPage from './pages/admin/LoginPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import SettingsPage from './pages/admin/SettingsPage';
 import AdminLayout from './components/admin/AdminLayout';
 import PropertiesPage from './pages/admin/PropertiesPage';
+import BlogsPage from './pages/admin/BlogsPage';
 import SubscribersPage from './pages/admin/SubscribersPage';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import ScrollToTop from './components/ScrollToTop';
@@ -34,6 +37,8 @@ const AppContent: React.FC = () => {
           <Route path="/property/:id" element={<PropertyDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<LoginPage />} />
@@ -41,6 +46,7 @@ const AppContent: React.FC = () => {
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<DashboardPage />} />
             <Route path="/admin/properties" element={<PropertiesPage />} />
+            <Route path="/admin/blogs" element={<BlogsPage />} />
             <Route path="/admin/rent-inquiries" element={<RentInquiriesPage />} />
             <Route path="/admin/subscribers" element={<SubscribersPage />} />
             <Route path="/admin/settings" element={<SettingsPage />} />

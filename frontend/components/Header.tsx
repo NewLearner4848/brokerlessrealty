@@ -104,6 +104,7 @@ const Header: React.FC = () => {
 
             {/* Right Nav */}
             <nav className="flex-1 flex justify-start space-x-8">
+                <NavLink to="/blog" className={navLinkClasses}>Blog<NavLinkUnderline /></NavLink>
                 <NavLink to="/#testimonials-section" className={hashLinkClasses}>Testimonials<NavLinkUnderline /></NavLink>
                 <NavLink to="/about" className={navLinkClasses}>About Us<NavLinkUnderline /></NavLink>
                 <NavLink to="/contact" className={navLinkClasses}>Contact<NavLinkUnderline /></NavLink>
@@ -117,6 +118,7 @@ const Header: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <NavLink to="/" className={mobileNavLinkClasses} onClick={()=>setIsOpen(false)} end>Home</NavLink>
             <NavLink to="/properties" className={mobileNavLinkClasses} onClick={()=>setIsOpen(false)}>Properties</NavLink>
+            <NavLink to="/blog" className={mobileNavLinkClasses} onClick={()=>setIsOpen(false)}>Blog</NavLink>
             <NavLink to="/#services-section" className={mobileHashLinkClasses} onClick={()=>setIsOpen(false)}>Services</NavLink>
             <NavLink to="/#testimonials-section" className={mobileHashLinkClasses} onClick={()=>setIsOpen(false)}>Testimonials</NavLink>
             <NavLink to="/about" className={mobileNavLinkClasses} onClick={()=>setIsOpen(false)}>About Us</NavLink>

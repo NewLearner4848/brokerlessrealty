@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { seedProperties } = require('./propertySeeder');
+const { seedBlogs } = require('./blogSeeder');
 const pool = require('../config/db');
 
 async function seedAdmin() {
@@ -42,6 +43,7 @@ async function runSeeders() {
   try {
     await seedAdmin();
     await seedProperties();
+    await seedBlogs();
     console.log('Seeding complete.');
   } catch (error) {
     console.error('Error during seeding:', error);
