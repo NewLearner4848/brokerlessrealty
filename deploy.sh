@@ -1,16 +1,19 @@
 #!/bin/bash
 set -e
 
-echo "📥 Pulling latest frontend code..."
+echo "📥 Pulling latest code..."
 git pull origin main
 
-echo "🐳 Rebuilding frontend container..."
+echo "🐳 Rebuilding frontend..."
 docker compose build frontend
 
-echo "🚀 Restarting frontend..."
-docker compose up -d frontend
+echo "🐳 Rebuilding backend..."
+docker compose build backend
 
-echo "🧹 Cleaning unused Docker images..."
+echo "🚀 Restarting services..."
+docker compose up -d frontend backend
+
+echo "🧹 Cleaning unused images..."
 docker image prune -f
 
-echo "✅ Frontend deployment completed!"
+echo "✅ Deployment completed successfully!"
