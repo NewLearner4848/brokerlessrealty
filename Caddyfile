@@ -17,6 +17,11 @@
 	@www host www.{$FRONTEND_DOMAIN}
 	redir @www https://{$FRONTEND_DOMAIN}{uri} permanent
 
+	# Dynamic sitemap from backend
+	handle /sitemap.xml {
+		reverse_proxy backend:3001
+	}
+
 	reverse_proxy frontend:80
 }
 
